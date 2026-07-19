@@ -186,4 +186,29 @@ dlg.onclose = () => {
   setRecords(P.upsertRecord(next, rec));
 };
 
+function download(name, text, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+$('csv-btn').onclick = () => download('punch.csv', P.toCSV(records), 'text/csv');
+$('backup-btn').onclick = () => download('punch-backup.json', P.toBackup(records), 'application/json');
+$('restore-btn').onclick = () => $('restore-input').click();
+$('restore-input').onchange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const restored = P.fromBackup(await file.text());
+    if (confirm(`${restored.length}건의 기록으로 교체할까요?\n현재 기록은 사라집니다.`)) {
+      setRecords(restored);
+    }
+  } catch (err) {
+    alert(`복원 실패: ${err.message}`);
+  }
+  e.target.value = '';
+};
+
 render();
