@@ -29,6 +29,9 @@
     --done-a: #a39a8c;  --done-b: #857c6d;  --done-glow: 133 124 109;
     --accent: #2f56e0;
     --miss:   #d3452f;
+    /* undo bar is role-reversed (bg: --ink), so its button needs its own
+       per-theme token: amber on near-black here, deep amber on cream in dark */
+    --undo-btn: #f6a13d;
 
     --shadow-1: 0 1px 2px rgba(33,29,23,.05), 0 8px 24px -14px rgba(33,29,23,.30);
     --shadow-2: 0 24px 60px -22px rgba(33,29,23,.45);
@@ -54,6 +57,7 @@
       --done-a: #4c463b;  --done-b: #3a352c;  --done-glow: 120 112 98;
       --accent: #6f97ff;
       --miss:   #ff6b52;
+      --undo-btn: #9c4d00;
 
       --shadow-1: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px -16px rgba(0,0,0,.7);
       --shadow-2: 0 30px 70px -24px rgba(0,0,0,.75);
@@ -252,7 +256,7 @@
   #undo-btn {
     background: none;
     border: 0;
-    color: var(--out-a);
+    color: var(--undo-btn);
     font-weight: 700;
     font-size: .9rem;
     padding: .35rem .75rem;
@@ -553,7 +557,7 @@
   </footer>
 </main>
 
-<dialog id="edit-dialog">
+<dialog id="edit-dialog" aria-labelledby="edit-title">
   <form method="dialog" id="edit-form">
     <h3 id="edit-title">기록 수정</h3>
     <label>날짜 <input type="date" name="date" required></label>
