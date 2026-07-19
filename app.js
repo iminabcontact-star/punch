@@ -104,23 +104,25 @@ function render() {
   const active = P.activeRecord(records, today);
   const todayRec = P.getRecord(records, today);
   const btn = $('punch-btn');
+  // 히어로 버튼은 큰 라벨 + 작은 힌트 2단 구성 (이모지는 기기마다 깨져서 쓰지 않음)
+  const hero = (label, hint) =>
+    `<span class="hero-label">${esc(label)}</span><span class="hero-hint">${esc(hint)}</span>`;
   if (active) {
-    btn.textContent = '퇴근 🌇';
+    btn.innerHTML = hero('퇴근',
+      `${active.in} 출근함${active.date !== today ? ' (어제)' : ''}`);
     btn.className = 'out';
     btn.disabled = false;
-    $('today-sub').textContent =
-      `${active.in} 출근함${active.date !== today ? ' (어제)' : ''}`;
   } else if (todayRec?.out) {
-    btn.textContent = `오늘 ${P.formatDuration(P.durationMinutes(todayRec))} 근무 완료 ✅`;
+    btn.innerHTML = hero(P.formatDuration(P.durationMinutes(todayRec)),
+      `오늘 근무 완료 · ${todayRec.in} ~ ${todayRec.out}`);
     btn.className = 'done';
     btn.disabled = true;
-    $('today-sub').textContent = `${todayRec.in} ~ ${todayRec.out}`;
   } else {
-    btn.textContent = '출근 🌅';
+    btn.innerHTML = hero('출근', '탭 한 번으로 기록');
     btn.className = 'in';
     btn.disabled = false;
-    $('today-sub').textContent = '';
   }
+  $('today-sub').textContent = '';
 
   const [y, m] = viewMonth.split('-');
   $('month-title').textContent = `${y}년 ${Number(m)}월`;

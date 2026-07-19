@@ -162,13 +162,15 @@
   /* ---------- hero punch button ---------- */
   #punch-btn {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
     width: 100%;
     height: 8.5rem;
     border: 0;
     border-radius: var(--r-lg);
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -.01em;
     color: #fff;
     cursor: pointer;
     overflow: hidden;
@@ -176,6 +178,20 @@
     isolation: isolate;
     transition: transform .18s var(--ease), box-shadow .3s var(--ease),
                 background .4s var(--ease);
+  }
+  .hero-label {
+    font-size: 2.15rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-hint {
+    font-size: .85rem;
+    font-weight: 600;
+    letter-spacing: -.005em;
+    opacity: .82;
+    font-variant-numeric: tabular-nums;
   }
   /* top sheen */
   #punch-btn::before {
@@ -532,7 +548,7 @@
     <p id="today-sub"></p>
   </header>
 
-  <button id="punch-btn" class="in">출근 🌅</button>
+  <button id="punch-btn" class="in"><span class="hero-label">출근</span><span class="hero-hint">탭 한 번으로 기록</span></button>
   <div id="undo-bar" hidden>
     <span>기록됨</span>
     <button id="undo-btn">실행취소</button>
