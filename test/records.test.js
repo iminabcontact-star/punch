@@ -56,6 +56,14 @@ test('upsertRecord: 수정과 추가, 정렬 유지', () => {
   assert.equal(recs[0].in, '08:30');
 });
 
+test('upsertRecord: 같은 날짜는 1건으로 유지 (중복 생성 금지)', () => {
+  let recs = [R('2026-07-19', '09:00', '18:00')];
+  recs = P.upsertRecord(recs, R('2026-07-19', '10:00', '19:00'));
+  assert.equal(recs.length, 1);
+  assert.equal(recs[0].in, '10:00');
+  assert.equal(recs.filter(r => r.date === '2026-07-19').length, 1);
+});
+
 test('deleteRecord', () => {
   const recs = [R('2026-07-19', '09:00', '18:00')];
   assert.deepEqual(P.deleteRecord(recs, '2026-07-19'), []);

@@ -33,6 +33,10 @@ function setRecords(next, { undoable = false } = {}) {
       $('undo-bar').hidden = true;
       undoSnapshot = null;
     }, 3000);
+  } else {
+    undoSnapshot = null;
+    clearTimeout(undoTimer);
+    $('undo-bar').hidden = true;
   }
   records = next;
   persist();
