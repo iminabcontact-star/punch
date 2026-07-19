@@ -16,6 +16,14 @@ function load() {
   }
 }
 
+function persist() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(records));
+  } catch {
+    alert('저장에 실패했습니다. 브라우저 저장 공간을 확인해주세요.');
+  }
+}
+
 function setRecords(next, { undoable = false } = {}) {
   if (undoable) {
     undoSnapshot = records;
@@ -27,14 +35,14 @@ function setRecords(next, { undoable = false } = {}) {
     }, 3000);
   }
   records = next;
-  localStorage.setItem(KEY, JSON.stringify(records));
+  persist();
   render();
 }
 
 $('undo-btn').onclick = () => {
   if (undoSnapshot) {
     records = undoSnapshot;
-    localStorage.setItem(KEY, JSON.stringify(records));
+    persist();
   }
   undoSnapshot = null;
   clearTimeout(undoTimer);
@@ -70,6 +78,16 @@ $('punch-btn').onclick = () => {
 
 $('prev-month').onclick = () => { viewMonth = P.shiftMonth(viewMonth, -1); render(); };
 $('next-month').onclick = () => { viewMonth = P.shiftMonth(viewMonth, 1); render(); };
+
+// localStorage는 load()에서 형식 검증 없이 읽으므로, innerHTML에 넣기 전에 이스케이프
+function esc(v) {
+  return String(v)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
 
 function render() {
   const now = new Date();
@@ -110,9 +128,9 @@ function render() {
     const [, mm, dd] = r.date.split('-');
     const outText = r.out ?? (P.missingOut(r, today) ? '퇴근 미입력' : '근무 중');
     li.innerHTML =
-      `<span class="d">${Number(mm)}/${Number(dd)}</span>` +
-      `<span class="t">${r.in} ~ ${r.out ? r.out : `<em class="miss">${outText}</em>`}</span>` +
-      `<span class="dur">${P.formatDuration(P.durationMinutes(r))}</span>`;
+      `<span class="d">${esc(Number(mm))}/${esc(Number(dd))}</span>` +
+      `<span class="t">${esc(r.in)} ~ ${r.out ? esc(r.out) : `<em class="miss">${esc(outText)}</em>`}</span>` +
+      `<span class="dur">${esc(P.formatDuration(P.durationMinutes(r)))}</span>`;
     list.appendChild(li);
   }
 
