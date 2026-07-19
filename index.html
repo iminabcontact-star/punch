@@ -26,7 +26,7 @@
     /* stateful hero + semantics (baked into the button state classes) */
     --in-a:   #3f78ff;  --in-b:   #2f56e0;  --in-glow:  63 120 255;
     --out-a:  #f6a13d;  --out-b:  #e07a26;  --out-glow: 224 122 38;
-    --done-a: #a39a8c;  --done-b: #857c6d;  --done-glow: 133 124 109;
+    --success: #1e7f4f;
     --accent: #2f56e0;
     --miss:   #d3452f;
     /* undo bar is role-reversed (bg: --ink), so its button needs its own
@@ -54,7 +54,7 @@
 
       --in-a:   #5a8bff;  --in-b:   #3a63e8;  --in-glow:  90 139 255;
       --out-a:  #f9ad4d;  --out-b:  #e5842f;  --out-glow: 229 132 47;
-      --done-a: #4c463b;  --done-b: #3a352c;  --done-glow: 120 112 98;
+      --success: #62c78e;
       --accent: #6f97ff;
       --miss:   #ff6b52;
       --undo-btn: #9c4d00;
@@ -217,16 +217,17 @@
       inset 0 1px 0 rgba(255,255,255,.30),
       inset 0 -3px 10px rgba(0,0,0,.12);
   }
+  /* 완료 = 차분한 성공 카드: 하루를 마친 화면이 제일 산뜻해야 한다 */
   #punch-btn.done {
-    background: linear-gradient(145deg, var(--done-a), var(--done-b));
-    font-size: 1.15rem;
-    font-weight: 700;
+    background: var(--surface);
+    border: 1px solid var(--line);
     cursor: default;
-    color: rgba(255,255,255,.94);
-    box-shadow:
-      0 8px 22px -12px rgba(var(--done-glow) / .55),
-      inset 0 1px 0 rgba(255,255,255,.14);
+    color: var(--ink);
+    box-shadow: var(--shadow-1);
   }
+  #punch-btn.done::before { display: none; }
+  #punch-btn.done .hero-label { color: var(--success); }
+  #punch-btn.done .hero-hint { color: var(--ink-soft); opacity: 1; }
   #punch-btn:active:not(:disabled):not(.done) {
     transform: translateY(2px) scale(.988);
     box-shadow:
