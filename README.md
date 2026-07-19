@@ -3,7 +3,7 @@
 출근/퇴근 버튼 하나로 기록하고 월 근무시간을 자동 합산하는 웹페이지.
 서버 없음, 로그인 없음, 설치 없음 — 데이터는 내 브라우저에만 저장됩니다.
 
-**사용하기:** https://<GitHub아이디>.github.io/punch/
+**사용하기:** https://iminabcontact-star.github.io/punch/
 
 ## 사용법
 
