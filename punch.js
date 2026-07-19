@@ -102,3 +102,38 @@ export function monthTotalMinutes(records, month) {
 export function missingOut(rec, today) {
   return rec.out == null && rec.date < today;
 }
+
+// ---- CSV / 백업 ----
+
+export function toCSV(records) {
+  const rows = [...records]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(r => [r.date, r.in, r.out ?? '', durationMinutes(r) ?? ''].join(','));
+  return ['date,in,out,minutes', ...rows].join('\n') + '\n';
+}
+
+export function toBackup(records) {
+  return JSON.stringify({ app: 'punch', version: 1, records }, null, 2);
+}
+
+export function fromBackup(text) {
+  let obj;
+  try {
+    obj = JSON.parse(text);
+  } catch {
+    throw new Error('JSON 파일이 아닙니다');
+  }
+  if (obj?.app !== 'punch' || !Array.isArray(obj.records)) {
+    throw new Error('punch 백업 파일이 아닙니다');
+  }
+  for (const r of obj.records) {
+    const ok =
+      /^\d{4}-\d{2}-\d{2}$/.test(r?.date ?? '') &&
+      /^\d{2}:\d{2}$/.test(r?.in ?? '') &&
+      (r.out == null || /^\d{2}:\d{2}$/.test(r.out));
+    if (!ok) throw new Error(`잘못된 기록이 있습니다: ${JSON.stringify(r)}`);
+  }
+  return sortRecords(
+    obj.records.map(r => ({ date: r.date, in: r.in, out: r.out ?? null, overnight: !!r.overnight }))
+  );
+}
