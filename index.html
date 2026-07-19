@@ -193,27 +193,14 @@
     opacity: .82;
     font-variant-numeric: tabular-nums;
   }
-  /* top sheen */
+  /* top sheen — 은은하게만. 텍스트 영역을 덮는 오버레이는 금지 (가독성) */
   #punch-btn::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
     background: linear-gradient(180deg,
-      rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 42%);
-    pointer-events: none;
-  }
-  /* soft roaming light */
-  #punch-btn::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    width: 130%;
-    aspect-ratio: 1;
-    top: -70%;
-    left: -15%;
-    background: radial-gradient(circle,
-      rgba(255,255,255,.28) 0%, transparent 60%);
+      rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 34%);
     pointer-events: none;
   }
   #punch-btn.in {
@@ -240,7 +227,6 @@
       0 8px 22px -12px rgba(var(--done-glow) / .55),
       inset 0 1px 0 rgba(255,255,255,.14);
   }
-  #punch-btn.done::after { opacity: .4; }
   #punch-btn:active:not(:disabled):not(.done) {
     transform: translateY(2px) scale(.988);
     box-shadow:
