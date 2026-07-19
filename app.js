@@ -131,11 +131,52 @@ function render() {
       `<span class="d">${esc(Number(mm))}/${esc(Number(dd))}</span>` +
       `<span class="t">${esc(r.in)} ~ ${r.out ? esc(r.out) : `<em class="miss">${esc(outText)}</em>`}</span>` +
       `<span class="dur">${esc(P.formatDuration(P.durationMinutes(r)))}</span>`;
+    li.onclick = () => openEdit(r);
     list.appendChild(li);
   }
 
   $('month-total').textContent =
     `이번 달 합계: ${P.formatDuration(P.monthTotalMinutes(records, viewMonth)) || '0h 00m'}`;
 }
+
+const dlg = $('edit-dialog');
+const form = $('edit-form');
+let editingDate = null; // null이면 추가 모드
+
+function openEdit(rec) {
+  editingDate = rec?.date ?? null;
+  $('edit-title').textContent = rec ? '기록 수정' : '기록 추가';
+  $('edit-delete').hidden = !rec;
+  form.elements.date.value = rec?.date ?? P.todayStr(new Date());
+  form.elements.in.value = rec?.in ?? '09:00';
+  form.elements.out.value = rec?.out ?? '';
+  form.elements.overnight.checked = !!rec?.overnight;
+  dlg.showModal();
+}
+
+$('add-btn').onclick = () => openEdit(null);
+
+dlg.onclose = () => {
+  const f = form.elements;
+  if (dlg.returnValue === 'delete' && editingDate) {
+    if (confirm('이 기록을 삭제할까요?')) setRecords(P.deleteRecord(records, editingDate));
+    return;
+  }
+  if (dlg.returnValue !== 'save') return;
+
+  const rec = {
+    date: f.date.value,
+    in: f.in.value,
+    out: f.out.value || null,
+    overnight: f.overnight.checked,
+  };
+  // 자정 넘긴 야근: 퇴근이 출근보다 이르면 확인
+  if (rec.out && !rec.overnight && P.isOvernightCandidate(rec.in, rec.out)) {
+    rec.overnight = confirm('퇴근이 출근보다 이릅니다. 다음날 퇴근(야근)으로 계산할까요?');
+  }
+  let next = records;
+  if (editingDate && editingDate !== rec.date) next = P.deleteRecord(next, editingDate);
+  setRecords(P.upsertRecord(next, rec));
+};
 
 render();
