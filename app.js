@@ -155,6 +155,9 @@ function openEdit(rec) {
 }
 
 $('add-btn').onclick = () => openEdit(null);
+// 삭제/취소는 type="button": Enter의 암묵적 제출이 저장으로만 가도록
+$('edit-delete').onclick = () => dlg.close('delete');
+$('edit-cancel').onclick = () => dlg.close('cancel');
 
 dlg.onclose = () => {
   const f = form.elements;
@@ -176,6 +179,10 @@ dlg.onclose = () => {
   }
   let next = records;
   if (editingDate && editingDate !== rec.date) next = P.deleteRecord(next, editingDate);
+  // 날짜 충돌: 다른 기록이 있는 날짜로 저장하려면 확인 (거절 시 records는 그대로)
+  if ((!editingDate || editingDate !== rec.date) && P.getRecord(next, rec.date)) {
+    if (!confirm(`${rec.date}에 이미 기록이 있습니다. 덮어쓸까요?`)) return;
+  }
   setRecords(P.upsertRecord(next, rec));
 };
 
